@@ -144,8 +144,7 @@ body {
     color: var(--text);
     position: relative;
     z-index: 2;
-    opacity: 0;
-    transform: translateY(60px);
+    /* opacity/transform managed by GSAP to avoid invisible elements on slow loads */
 }
 .hero-heading em { color: var(--accent); font-style: italic; }
 
@@ -180,8 +179,7 @@ body {
     align-items: flex-end;
     border-top: 1px solid var(--border);
     padding-top: 1.5rem;
-    opacity: 0;
-    transform: translateY(30px);
+    /* opacity/transform managed by GSAP */
 }
 .hero-bottom-left { display: flex; flex-direction: column; gap: 0.4rem; }
 .hero-bottom-left span:first-child {
@@ -372,8 +370,7 @@ section { position: relative; z-index: 1; }
     gap: 2rem;
     padding: 2.5rem 0;
     border-bottom: 1px solid var(--border);
-    opacity: 0;
-    transform: translateX(40px);
+    /* opacity/transform managed by GSAP */
 }
 
 .step-num {
@@ -428,8 +425,7 @@ section { position: relative; z-index: 1; }
     gap: 2rem;
     padding: 2rem 0;
     border-bottom: 1px solid var(--border);
-    opacity: 0;
-    transform: translateY(20px);
+    /* opacity/transform managed by GSAP */
     transition: background 0.3s;
 }
 .eg-row:hover { background: rgba(255,255,255,0.02); padding-left: 1rem; padding-right: 1rem; border-radius: 8px; }
@@ -665,12 +661,18 @@ footer div {
     flex-wrap: wrap;
     gap: 6px;
     justify-content: center;
+    align-content: flex-start;
     max-width: 800px;
     position: relative; z-index: 1;
     min-height: 120px;
-    align-content: center;
+    max-height: 48vh;
+    overflow-y: auto;
     padding: 1rem;
+    margin-bottom: 2rem;
 }
+.string-wrap::-webkit-scrollbar { width: 4px; }
+.string-wrap::-webkit-scrollbar-track { background: transparent; }
+.string-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
 .token {
     width: 44px; height: 44px;

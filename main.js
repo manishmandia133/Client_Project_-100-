@@ -174,51 +174,66 @@ window.addEventListener('resize', () => {
 });
 
 // ─── GSAP SCROLL ANIMATIONS ─────────────────────────
-// Hero entrance
-gsap.to('.hero-heading', {
-    opacity: 1, y: 0, duration: 1.4, ease: 'power4.out', delay: 0.2
-});
-gsap.to('.hero-bottom', {
-    opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.7
-});
 
-// Proof steps stagger reveal
-gsap.utils.toArray('.step').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-        delay: i * 0.1,
-        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-    });
-});
+// Set initial hidden states via GSAP (not CSS) so fallback is visible if JS fails
+gsap.set('.hero-heading', { opacity: 0, y: 60 });
+gsap.set('.hero-bottom',  { opacity: 0, y: 30 });
+gsap.set('.step',         { opacity: 0, x: 40 });
+gsap.set('.eg-row',       { opacity: 0, y: 20 });
+gsap.set('.fx-card',      { opacity: 0, y: 50 });
+gsap.set('.display-h2',   { opacity: 0, y: 40 });
+gsap.set('.pill-tag',     { opacity: 0, y: 20 });
 
-// Example rows stagger reveal
-gsap.utils.toArray('.eg-row').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        delay: i * 0.08,
-        scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none reverse' }
-    });
-});
-
-// Formula cards on scroll
-gsap.utils.toArray('.fx-card').forEach((el, i) => {
-    gsap.fromTo(el,
-        { opacity: 0, y: 50 },
-        {
-            opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-            delay: i * 0.12,
-            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-        }
-    );
-});
+// Hero entrance — immediate, no ScrollTrigger
+gsap.to('.hero-heading', { opacity: 1, y: 0, duration: 1.4, ease: 'power4.out', delay: 0.2 });
+gsap.to('.hero-bottom',  { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.7 });
 
 // Section headings
 gsap.utils.toArray('.display-h2').forEach(el => {
-    gsap.fromTo(el,
-        { opacity: 0, y: 40 },
-        {
-            opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-        }
-    );
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
 });
+
+// Pill tags
+gsap.utils.toArray('.pill-tag').forEach(el => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 95%', once: true }
+    });
+});
+
+// Formula cards stagger
+gsap.utils.toArray('.fx-card').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        delay: i * 0.12,
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
+// Proof steps stagger
+gsap.utils.toArray('.step').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+        delay: i * 0.08,
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
+// Example rows stagger
+gsap.utils.toArray('.eg-row').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        delay: i * 0.07,
+        scrollTrigger: { trigger: el, start: 'top 95%', once: true }
+    });
+});
+
+// Force ScrollTrigger to recalculate after fonts/images load
+// (critical for GitHub Pages where layout shifts happen after deploy)
+window.addEventListener('load', () => {
+    ScrollTrigger.refresh();
+});
+
