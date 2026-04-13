@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumping Lemma | The Antigravity Frequency</title>
+    <meta name="description" content="An interactive experience exploring the Pumping Lemma and its connection to antigravity frequency simulation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+
+    <!-- Cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Canvas BG -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <div class="nav-logo">AG — CORE</div>
+        <ul class="nav-links">
+            <li><a href="#hero">Intro</a></li>
+            <li><a href="#theory">Theory</a></li>
+            <li><a href="#proof">Proof</a></li>
+            <li><a href="#cta">Simulate</a></li>
+        </ul>
+        <a href="simulator.html" class="nav-btn">Open Simulator →</a>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section id="hero">
+        <div class="hero-eyebrow">THEORY OF COMPUTATION // PROTOCOL 001</div>
+        <h1 class="hero-heading">
+            <em>isn't just</em><br>
+            a formula.
+        </h1>
+        <p class="hero-tag">Powered by Finite States*</p>
+
+        <!-- 3D Scene -->
+        <div class="hero-model-wrap" id="hero-model">
+            <canvas id="three-canvas"></canvas>
+        </div>
+
+        <div class="hero-bottom">
+            <div class="hero-bottom-left">
+                <span>THE PUMPING LEMMA</span>
+                <span class="hero-sub">A beginner-friendly deep-dive into why some languages break machines.</span>
+            </div>
+            <div class="hero-scroll-hint">
+                <div class="scroll-line"></div>
+                <span>SCROLL</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── WHAT IS IT ─── -->
+    <section id="theory" class="section-what">
+        <div class="pill-tag">DEFINITION</div>
+        <h2 class="display-h2">The Core Dilemma</h2>
+        <div class="two-col">
+            <div class="two-col-left">
+                <p class="body-lg">A <strong>Finite State Automaton (FSA)</strong> has no memory. It only knows its current state. Feed it a string longer than its state count and, by the <strong>Pigeonhole Principle</strong>, it <em>must</em> revisit a state — creating a repeatable loop.</p>
+                <p class="body-lg" style="margin-top:1.5rem;">The <strong>Pumping Lemma</strong> weaponises that loop. If every string in a language can be "pumped" (its loop repeated endlessly) and still stay in the language, it <em>might</em> be regular. If we find even one string where pumping breaks it — <strong>the language is NOT regular.</strong></p>
+            </div>
+            <div class="two-col-right">
+                <div class="stat-block">
+                    <div class="stat-num">p</div>
+                    <div class="stat-label">Pumping Length — the threshold above which every string must contain a loop.</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-num">|y| &gt; 0</div>
+                    <div class="stat-label">The pumpable segment y can never be empty.</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-num">|xy| ≤ p</div>
+                    <div class="stat-label">The loop must appear within the first p characters.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FORMULA TICKER ─── -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <span>S = XYZ</span><span>·</span>
+            <span>XY<sup>n</sup>Z</span><span>·</span>
+            <span>|y| &gt; 0</span><span>·</span>
+            <span>|xy| ≤ p</span><span>·</span>
+            <span>n ≥ 0</span><span>·</span>
+            <span>NOT REGULAR</span><span>·</span>
+            <span>S = XYZ</span><span>·</span>
+            <span>XY<sup>n</sup>Z</span><span>·</span>
+            <span>|y| &gt; 0</span><span>·</span>
+            <span>|xy| ≤ p</span><span>·</span>
+            <span>n ≥ 0</span><span>·</span>
+            <span>NOT REGULAR</span><span>·</span>
+        </div>
+    </div>
+
+    <!-- ─── FORMULA BREAKDOWN ─── -->
+    <section class="section-formula">
+        <div class="pill-tag">S = XYZ</div>
+        <h2 class="display-h2">Deconstructing<br><em>the string</em></h2>
+        <div class="formula-grid">
+            <div class="fx-card" id="fxc-1">
+                <div class="fx-index">01</div>
+                <div class="fx-title">X — The Prefix</div>
+                <div class="fx-body">The part before the loop. The FSA processes x as it advances through initial states toward the repeated cycle.</div>
+                <div class="fx-math">S = <span class="hl-x">X</span>YZ</div>
+            </div>
+            <div class="fx-card" id="fxc-2">
+                <div class="fx-index">02</div>
+                <div class="fx-title">Y — The Loop</div>
+                <div class="fx-body">The pumpable segment. Because the automaton returns to the same state, this portion can repeat 0, 1, 2... infinite times.</div>
+                <div class="fx-math">S = X<span class="hl-y">Y<sup>n</sup></span>Z</div>
+            </div>
+            <div class="fx-card" id="fxc-3">
+                <div class="fx-index">03</div>
+                <div class="fx-title">Z — The Suffix</div>
+                <div class="fx-body">Everything after the loop. It carries the balance of the string. Pump y, and z stays fixed — breaking the pattern.</div>
+                <div class="fx-math">S = XY<span class="hl-z">Z</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── PROOF SECTION ─── -->
+    <section id="proof" class="section-proof">
+        <div class="proof-left">
+            <div class="pill-tag">FORMAL PROOF</div>
+            <h2 class="display-h2">The<br><em>Enemy Game</em></h2>
+            <p class="body-lg">A proof by contradiction. You vs. a hypothetical FSM that claims it can recognise a non-regular language.</p>
+        </div>
+        <div class="proof-steps">
+            <div class="step">
+                <div class="step-num">①</div>
+                <div class="step-content">
+                    <div class="step-actor enemy">ENEMY speaks</div>
+                    <p>Assumes the language is regular. Provides you with a pumping length <em>p</em>.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">②</div>
+                <div class="step-content">
+                    <div class="step-actor you">YOU respond</div>
+                    <p>Carefully choose a string <code>s ∈ L</code> with <code>|s| ≥ p</code>. Classic choice: <code>aᵖbᵖ</code>.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">③</div>
+                <div class="step-content">
+                    <div class="step-actor enemy">ENEMY speaks</div>
+                    <p>Partitions <code>s = xyz</code> adhering strictly to <code>|y|&gt;0</code> and <code>|xy|≤p</code>. The y must fall in the <code>aᵖ</code> region.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">④</div>
+                <div class="step-content">
+                    <div class="step-actor you">YOU win</div>
+                    <p>Pump to <code>n = 2</code>. The result <code>aᵖ⁺ᵏbᵖ</code> has more a's than b's. It's <strong>NOT in the language</strong>. Contradiction. Q.E.D.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── EXAMPLE STRIP ─── -->
+    <section class="section-examples">
+        <div class="pill-tag">EXAMPLES</div>
+        <h2 class="display-h2">Who breaks<br><em>the machine?</em></h2>
+        <div class="eg-list">
+            <div class="eg-row">
+                <div class="eg-lang">L₁ = { aⁿbⁿ | n≥0 }</div>
+                <div class="eg-verdict fail">NOT REGULAR</div>
+                <div class="eg-reason">Pumping 'a' causes a&gt;b imbalance. No FSM can count arbitrarily.</div>
+            </div>
+            <div class="eg-row">
+                <div class="eg-lang">L₂ = { aⁿb²ⁿ | n≥0 }</div>
+                <div class="eg-verdict fail">NOT REGULAR</div>
+                <div class="eg-reason">Changing the count of a breaks the 1:2 ratio irreparably.</div>
+            </div>
+            <div class="eg-row">
+                <div class="eg-lang">L₃ = { (ab)ⁿ | n≥0 }</div>
+                <div class="eg-verdict pass">REGULAR</div>
+                <div class="eg-reason">The repeating unit "ab" is itself the pumpable y. No imbalance is created.</div>
+            </div>
+            <div class="eg-row">
+                <div class="eg-lang">L₄ = { aⁿ | n is prime }</div>
+                <div class="eg-verdict fail">NOT REGULAR</div>
+                <div class="eg-reason">Pumping changes the count to a non-prime. Primes can't be finite-state-counted.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CTA ─── -->
+    <section id="cta" class="section-cta">
+        <p class="cta-overline">ANTIGRAVITY FREQUENCY SIMULATOR</p>
+        <h2 class="cta-heading">See it<br><em>destabilise.</em></h2>
+        <a href="simulator.html" class="cta-btn">ENTER SIMULATOR</a>
+        <p class="cta-note">Interact with a live string-pumping visualisation of L = { PⁿDⁿ }</p>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <div class="footer-left">AG—CORE // THEORETICAL COMPUTATION DEPT.</div>
+        <div class="footer-right">PROTOCOL 001 · PUMPING LEMMA · v2.1</div>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
