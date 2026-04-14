@@ -382,28 +382,34 @@
 
 /* V-PUMP tokens — elevated with violet glow pulse */
 .cfl-string-wrap .token.v-pump {
+    color: var(--cfl-accent) !important;
+    background: rgba(167,139,250,0.15) !important;
+    text-shadow: 0 0 8px rgba(167,139,250,0.5) !important;
     box-shadow: 0 0 16px rgba(167,139,250,0.6), 0 0 30px rgba(167,139,250,0.2);
-    border-color: var(--cfl-accent);
+    border-color: var(--cfl-accent) !important;
     transform: translateY(-6px) scale(1.08);
     animation: cfl-v-pulse 1.2s ease-in-out infinite alternate;
 }
 
 @keyframes cfl-v-pulse {
-    0%   { box-shadow: 0 0 12px rgba(167,139,250,0.5), 0 0 24px rgba(167,139,250,0.15); transform: translateY(-6px) scale(1.08); }
-    100% { box-shadow: 0 0 22px rgba(167,139,250,0.8), 0 0 40px rgba(167,139,250,0.3);  transform: translateY(-8px) scale(1.12); }
+    0%   { box-shadow: 0 0 12px rgba(167,139,250,0.5), 0 0 24px rgba(167,139,250,0.15); transform: translateY(-6px) scale(1.08); border-color: var(--cfl-accent) !important; }
+    100% { box-shadow: 0 0 22px rgba(167,139,250,0.8), 0 0 40px rgba(167,139,250,0.3);  transform: translateY(-8px) scale(1.12); border-color: var(--cfl-accent) !important; }
 }
 
 /* Y-PUMP tokens — elevated with pink glow pulse */
 .cfl-string-wrap .token.y-pump {
+    color: var(--cfl-accent3) !important;
+    background: rgba(244,114,182,0.15) !important;
+    text-shadow: 0 0 8px rgba(244,114,182,0.5) !important;
     box-shadow: 0 0 16px rgba(244,114,182,0.6), 0 0 30px rgba(244,114,182,0.2);
-    border-color: var(--cfl-accent3);
+    border-color: var(--cfl-accent3) !important;
     transform: translateY(-6px) scale(1.08);
     animation: cfl-y-pulse 1.2s ease-in-out infinite alternate;
 }
 
 @keyframes cfl-y-pulse {
-    0%   { box-shadow: 0 0 12px rgba(244,114,182,0.5), 0 0 24px rgba(244,114,182,0.15); transform: translateY(-6px) scale(1.08); }
-    100% { box-shadow: 0 0 22px rgba(244,114,182,0.8), 0 0 40px rgba(244,114,182,0.3);  transform: translateY(-8px) scale(1.12); }
+    0%   { box-shadow: 0 0 12px rgba(244,114,182,0.5), 0 0 24px rgba(244,114,182,0.15); transform: translateY(-6px) scale(1.08); border-color: var(--cfl-accent3) !important; }
+    100% { box-shadow: 0 0 22px rgba(244,114,182,0.8), 0 0 40px rgba(244,114,182,0.3);  transform: translateY(-8px) scale(1.12); border-color: var(--cfl-accent3) !important; }
 }
 
 /* Parse tree visualisation */
@@ -426,11 +432,16 @@
 
 /* Ensure all direct CFL stage children sit above the bg canvas */
 .cfl-stage .sim-title-area,
-.cfl-stage .n-badge,
 .cfl-stage .cfl-partition-labels,
 .cfl-stage .cfl-string-wrap,
 .cfl-stage .cfl-status-board {
     position: relative;
+    z-index: 1;
+}
+
+/* Ensure the background badge does not get drawn into normal flow */
+.cfl-stage .n-badge {
+    position: absolute;
     z-index: 1;
 }
 

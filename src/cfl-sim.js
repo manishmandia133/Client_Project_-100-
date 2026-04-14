@@ -124,13 +124,36 @@ function drawTree(parts, isStable) {
 function drawNode(c, x, y, text, color, glow) {
     c.save();
     if (glow) { c.shadowColor = color; c.shadowBlur = 12; }
-    c.beginPath(); c.arc(x, y, 14, 0, Math.PI * 2);
+    
+    c.font = '11px "Space Mono", monospace'; 
+    c.textAlign = 'center'; 
+    c.textBaseline = 'middle';
+    
+    const display = text.length > 6 ? text.slice(0, 5) + '…' : text;
+    const padding = 12;
+    const textWidth = c.measureText(display).width;
+    const width = Math.max(28, textWidth + padding);
+    const height = 28;
+    const r = 14;
+
+    c.beginPath();
+    c.moveTo(x - width/2 + r, y - height/2);
+    c.lineTo(x + width/2 - r, y - height/2);
+    c.quadraticCurveTo(x + width/2, y - height/2, x + width/2, y - height/2 + r);
+    c.lineTo(x + width/2, y + height/2 - r);
+    c.quadraticCurveTo(x + width/2, y + height/2, x + width/2 - r, y + height/2);
+    c.lineTo(x - width/2 + r, y + height/2);
+    c.quadraticCurveTo(x - width/2, y + height/2, x - width/2, y + height/2 - r);
+    c.lineTo(x - width/2, y - height/2 + r);
+    c.quadraticCurveTo(x - width/2, y - height/2, x - width/2 + r, y - height/2);
+    c.closePath();
+
     c.fillStyle = 'rgba(17,17,17,0.9)'; c.fill();
     c.strokeStyle = color; c.lineWidth = 1.5; c.stroke();
-    c.font = '11px "Space Mono", monospace'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    
     c.fillStyle = color;
-    const display = text.length > 6 ? text.slice(0, 5) + '…' : text;
-    c.fillText(display, x, y); c.restore();
+    c.fillText(display, x, y); 
+    c.restore();
 }
 
 function drawEdge(c, x1, y1, x2, y2, color) {
