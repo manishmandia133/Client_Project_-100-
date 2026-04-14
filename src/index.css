@@ -635,9 +635,13 @@ footer div {
     display: flex; flex-direction: column;
     align-items: center; justify-content: flex-start;
     padding: 3rem 2rem 2rem;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     background: var(--bg);
 }
+.sim-stage::-webkit-scrollbar { width: 4px; }
+.sim-stage::-webkit-scrollbar-track { background: transparent; }
+.sim-stage::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 #sim-bg-canvas {
     position: absolute; inset: 0;
     pointer-events: none; opacity: 0.25;
