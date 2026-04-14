@@ -1,7 +1,4 @@
-import * as THREE from 'three';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from '@studio-freight/lenis';
+// ─── Uses globals from CDN: THREE, gsap, ScrollTrigger, Lenis ───────────────
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,7 +25,6 @@ window.addEventListener('scroll', () => {
 });
 
 // ─── THREE.JS HERO SCENE ────────────────────────────
-// Spinning torus-knot (looks like a looping state machine / frequency loop)
 const heroCanvas = document.getElementById('three-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -39,59 +35,35 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, heroCanvas.parentElement.clientWidth / heroCanvas.parentElement.clientHeight, 0.1, 100);
 camera.position.set(0, 0, 5.5);
 
-// Torus Knot — evokes the "loop" concept of repeated states
 const geom = new THREE.TorusKnotGeometry(1.4, 0.38, 160, 24, 2, 3);
-const mat = new THREE.MeshStandardMaterial({
-    color: 0x0a0a0a,
-    metalness: 0.95,
-    roughness: 0.1,
-    wireframe: false,
-});
+const mat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.95, roughness: 0.1 });
 const mesh = new THREE.Mesh(geom, mat);
 scene.add(mesh);
 
-// Wireframe overlay
-const wireMat = new THREE.MeshBasicMaterial({
-    color: 0xc8f23a,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.07,
-});
+const wireMat = new THREE.MeshBasicMaterial({ color: 0xc8f23a, wireframe: true, transparent: true, opacity: 0.07 });
 const wireMesh = new THREE.Mesh(geom, wireMat);
 scene.add(wireMesh);
 
-// Lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-scene.add(ambientLight);
-
+scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 const dirLight1 = new THREE.DirectionalLight(0xc8f23a, 3.5);
-dirLight1.position.set(3, 3, 3);
-scene.add(dirLight1);
-
+dirLight1.position.set(3, 3, 3); scene.add(dirLight1);
 const dirLight2 = new THREE.DirectionalLight(0x4040ff, 2.0);
-dirLight2.position.set(-4, -2, 2);
-scene.add(dirLight2);
-
+dirLight2.position.set(-4, -2, 2); scene.add(dirLight2);
 const pointLight = new THREE.PointLight(0xff3d3d, 3.0, 15);
-pointLight.position.set(-2, 2, 3);
-scene.add(pointLight);
+pointLight.position.set(-2, 2, 3); scene.add(pointLight);
 
-// Mouse parallax
 let mouseX = 0, mouseY = 0;
 document.addEventListener('mousemove', e => {
     mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
     mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
 });
 
-// Hero 3D animation loop
-let heroRaf;
 const animateHero = () => {
-    heroRaf = requestAnimationFrame(animateHero);
+    requestAnimationFrame(animateHero);
     mesh.rotation.x += 0.003;
     mesh.rotation.y += 0.006;
     wireMesh.rotation.x = mesh.rotation.x;
     wireMesh.rotation.y = mesh.rotation.y;
-    // Parallax
     camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.03;
     camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.03;
     camera.lookAt(scene.position);
@@ -100,7 +72,6 @@ const animateHero = () => {
 animateHero();
 
 // ─── BACKGROUND PARTICLE CANVAS ─────────────────────
-// Finite state machine dot-graph particles
 const bgCanvas = document.getElementById('bg-canvas');
 const ctx = bgCanvas.getContext('2d');
 bgCanvas.width = window.innerWidth;
@@ -121,36 +92,25 @@ class Particle {
         this.color = Math.random() > 0.85 ? '#c8f23a' : '#ffffff';
     }
     update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
+        this.x += this.speedX; this.y += this.speedY;
         if (this.x < 0 || this.x > bgCanvas.width || this.y < 0 || this.y > bgCanvas.height) this.reset();
     }
     draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.opacity;
-        ctx.fill();
-        ctx.globalAlpha = 1;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fillStyle = this.color; ctx.globalAlpha = this.opacity; ctx.fill(); ctx.globalAlpha = 1;
     }
 }
 
 for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 
-// Draw connecting lines (FSM state graph edges)
 const drawConnections = () => {
     for (let i = 0; i < particles.length; i++) {
         for (let j = i+1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
+            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
             const dist = Math.sqrt(dx*dx + dy*dy);
             if (dist < 120) {
-                ctx.beginPath();
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.strokeStyle = `rgba(200,242,58,${0.04 * (1 - dist/120)})`;
-                ctx.lineWidth = 0.5;
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(200,242,58,${0.04 * (1 - dist/120)})`; ctx.lineWidth = 0.5; ctx.stroke();
             }
         }
     }
@@ -166,16 +126,13 @@ animateBG();
 
 // ─── RESIZE HANDLER ─────────────────────────────────
 window.addEventListener('resize', () => {
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
+    bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
     renderer.setSize(heroCanvas.parentElement.clientWidth, heroCanvas.parentElement.clientHeight);
     camera.aspect = heroCanvas.parentElement.clientWidth / heroCanvas.parentElement.clientHeight;
     camera.updateProjectionMatrix();
 });
 
 // ─── GSAP SCROLL ANIMATIONS ─────────────────────────
-
-// Set initial hidden states via GSAP (not CSS) so fallback is visible if JS fails
 gsap.set('.hero-heading', { opacity: 0, y: 60 });
 gsap.set('.hero-bottom',  { opacity: 0, y: 30 });
 gsap.set('.step',         { opacity: 0, x: 40 });
@@ -184,56 +141,26 @@ gsap.set('.fx-card',      { opacity: 0, y: 50 });
 gsap.set('.display-h2',   { opacity: 0, y: 40 });
 gsap.set('.pill-tag',     { opacity: 0, y: 20 });
 
-// Hero entrance — immediate, no ScrollTrigger
 gsap.to('.hero-heading', { opacity: 1, y: 0, duration: 1.4, ease: 'power4.out', delay: 0.2 });
 gsap.to('.hero-bottom',  { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.7 });
 
-// Section headings
 gsap.utils.toArray('.display-h2').forEach(el => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// Pill tags
 gsap.utils.toArray('.pill-tag').forEach(el => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 95%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 95%', once: true } });
 });
-
-// Formula cards stagger
 gsap.utils.toArray('.fx-card').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        delay: i * 0.12,
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: i * 0.12, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// Proof steps stagger
 gsap.utils.toArray('.step').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-        delay: i * 0.08,
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: i * 0.08, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// Example rows stagger
 gsap.utils.toArray('.eg-row').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        delay: i * 0.07,
-        scrollTrigger: { trigger: el, start: 'top 95%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: i * 0.07, scrollTrigger: { trigger: el, start: 'top 95%', once: true } });
 });
 
 // ─── CFL SECTION ANIMATIONS ────────────────────────
-
-// Set initial hidden states for CFL elements
 gsap.set('.cfl-pill-tag',      { opacity: 0, y: 20 });
 gsap.set('.cfl-display-h2',    { opacity: 0, y: 40 });
 gsap.set('.cfl-compare-card',  { opacity: 0, y: 50 });
@@ -241,62 +168,23 @@ gsap.set('.cfl-decomp-card',   { opacity: 0, y: 50 });
 gsap.set('.cfl-condition-row', { opacity: 0, x: 40 });
 gsap.set('.cfl-step',          { opacity: 0, x: 40 });
 
-// CFL pill tags
 gsap.utils.toArray('.cfl-pill-tag').forEach(el => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 95%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 95%', once: true } });
 });
-
-// CFL headings
 gsap.utils.toArray('.cfl-display-h2').forEach(el => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// CFL comparison cards stagger
 gsap.utils.toArray('.cfl-compare-card').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        delay: i * 0.15,
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: i * 0.15, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// CFL decomposition cards stagger
 gsap.utils.toArray('.cfl-decomp-card').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-        delay: i * 0.1,
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: i * 0.1, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// CFL condition rows stagger
 gsap.utils.toArray('.cfl-condition-row').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, x: 0, duration: 0.8, ease: 'power3.out',
-        delay: i * 0.1,
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out', delay: i * 0.1, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
-
-// CFL proof steps stagger
 gsap.utils.toArray('.cfl-step').forEach((el, i) => {
-    gsap.to(el, {
-        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-        delay: i * 0.08,
-        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
-    });
+    gsap.to(el, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: i * 0.08, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
 });
 
-// Force ScrollTrigger to recalculate after fonts/images load
-// (critical for GitHub Pages where layout shifts happen after deploy)
-window.addEventListener('load', () => {
-    ScrollTrigger.refresh();
-});
-
-
+window.addEventListener('load', () => { ScrollTrigger.refresh(); });

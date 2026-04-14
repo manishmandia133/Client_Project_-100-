@@ -1,4 +1,4 @@
-import { gsap } from 'gsap';
+// ─── Uses globals from CDN: gsap ────────────────────
 
 // ─── CURSOR ─────────────────────────────────────────
 const cursor = document.getElementById('cursor');
@@ -41,25 +41,17 @@ const animateBG = () => {
         if (p.y > bgCanvas.height) p.y = 0;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        // Purple/cyan palette for CFL
         const rnd = Math.random();
         ctx.fillStyle = rnd > 0.97 ? '#a78bfa' : rnd > 0.94 ? '#22d3ee' : '#ffffff';
-        ctx.globalAlpha = 0.25;
-        ctx.fill();
-        ctx.globalAlpha = 1;
+        ctx.globalAlpha = 0.25; ctx.fill(); ctx.globalAlpha = 1;
     });
     for (let i = 0; i < pts.length; i++) {
         for (let j = i + 1; j < pts.length; j++) {
-            const dx = pts[i].x - pts[j].x;
-            const dy = pts[i].y - pts[j].y;
+            const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
             const d = Math.sqrt(dx*dx + dy*dy);
             if (d < 100) {
-                ctx.beginPath();
-                ctx.moveTo(pts[i].x, pts[i].y);
-                ctx.lineTo(pts[j].x, pts[j].y);
-                ctx.strokeStyle = `rgba(167,139,250,${0.05 * (1 - d/100)})`;
-                ctx.lineWidth = 0.5;
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
+                ctx.strokeStyle = `rgba(167,139,250,${0.05 * (1 - d/100)})`; ctx.lineWidth = 0.5; ctx.stroke();
             }
         }
     }
@@ -83,38 +75,16 @@ function drawTree(parts, isStable) {
     const w = treeCanvas.width / window.devicePixelRatio;
     const h = treeCanvas.height / window.devicePixelRatio;
     treeCtx.clearRect(0, 0, w, h);
-
-    // Simplified parse tree: S at top, branching to show u/v/x/y/z
-    const cx = w / 2;
-    const topY = 20;
-    const midY = 70;
-    const botY = 140;
-
-    // Colors
-    const colors = {
-        u: '#64b5f6',
-        v: '#a78bfa',
-        x: '#22d3ee',
-        y: '#f472b6',
-        z: '#ff7043',
-    };
-
-    // S node
+    const cx = w / 2, topY = 20, midY = 70, botY = 140;
+    const colors = { u: '#64b5f6', v: '#a78bfa', x: '#22d3ee', y: '#f472b6', z: '#ff7043' };
     drawNode(treeCtx, cx, topY, 'S', isStable ? '#a78bfa' : '#f472b6');
-
-    // Two intermediate nodes: A (left) and A (right) — representing the repeated variable
-    const leftX = cx - w * 0.28;
-    const rightX = cx + w * 0.28;
-
+    const leftX = cx - w * 0.28, rightX = cx + w * 0.28;
     drawEdge(treeCtx, cx, topY + 10, leftX, midY - 10, 'rgba(167,139,250,0.4)');
     drawEdge(treeCtx, cx, topY + 10, cx, midY - 10, 'rgba(34,211,238,0.3)');
     drawEdge(treeCtx, cx, topY + 10, rightX, midY - 10, 'rgba(244,114,182,0.4)');
-
     drawNode(treeCtx, leftX, midY, 'A', 'rgba(167,139,250,0.6)');
     drawNode(treeCtx, cx, midY, 'A', 'rgba(34,211,238,0.6)');
     drawNode(treeCtx, rightX, midY, 'A', 'rgba(244,114,182,0.6)');
-
-    // Leaf nodes for each part
     const segments = [
         { label: 'u', x: leftX - w*0.1, color: colors.u, from: leftX },
         { label: 'v', x: leftX + w*0.05, color: colors.v, from: leftX },
@@ -122,20 +92,15 @@ function drawTree(parts, isStable) {
         { label: 'y', x: rightX - w*0.05, color: colors.y, from: rightX },
         { label: 'z', x: rightX + w*0.1, color: colors.z, from: rightX },
     ];
-
     segments.forEach(seg => {
         drawEdge(treeCtx, seg.from, midY + 10, seg.x, botY - 10, seg.color + '60');
         const val = parts[seg.label] || '';
-        const isPumped = (seg.label === 'v' || seg.label === 'y') && val.length > 0;
-        drawNode(treeCtx, seg.x, botY, val || 'ε', seg.color, isPumped);
+        drawNode(treeCtx, seg.x, botY, val || 'ε', seg.color, (seg.label === 'v' || seg.label === 'y') && val.length > 0);
     });
-
-    // Pump arrow indicators
     if (!isStable) {
         treeCtx.save();
         treeCtx.font = '10px "Space Mono", monospace';
-        treeCtx.fillStyle = '#f472b6';
-        treeCtx.globalAlpha = 0.7;
+        treeCtx.fillStyle = '#f472b6'; treeCtx.globalAlpha = 0.7;
         treeCtx.fillText('↻ pump', leftX + w*0.05 - 15, botY + 24);
         treeCtx.fillText('↻ pump', rightX - w*0.05 - 15, botY + 24);
         treeCtx.restore();
@@ -144,124 +109,67 @@ function drawTree(parts, isStable) {
 
 function drawNode(ctx, x, y, text, color, glow = false) {
     ctx.save();
-    if (glow) {
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 12;
-    }
-    ctx.beginPath();
-    ctx.arc(x, y, 14, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(17,17,17,0.9)';
-    ctx.fill();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.font = '11px "Space Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    if (glow) { ctx.shadowColor = color; ctx.shadowBlur = 12; }
+    ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(17,17,17,0.9)'; ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.font = '11px "Space Mono", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillStyle = color;
-    // Truncate long strings
     const display = text.length > 6 ? text.slice(0, 5) + '…' : text;
-    ctx.fillText(display, x, y);
-    ctx.restore();
+    ctx.fillText(display, x, y); ctx.restore();
 }
 
 function drawEdge(ctx, x1, y1, x2, y2, color) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.stroke();
 }
 
-// ─── SIMULATION LOGIC ────────────────────────────────
+// ─── CFL SIMULATION LOGIC ────────────────────────────
 const LANGUAGES = {
     anbncn: {
         title: 'Parse Tree Resonance Field',
         desc: 'L₁: Equal counts of a, b, and c in sequence. String: aⁿbⁿcⁿ',
-        genString: p => {
-            // s = a^p b^p c^p
-            // For any decomposition s = uvxyz with |vxy| ≤ p and |vy| > 0,
-            // v and y can't span all three symbols
-            return {
-                u: 'a'.repeat(Math.max(0, p - 2)),
-                v: 'a'.repeat(1),
-                x: 'a'.repeat(1) + 'b'.repeat(1),
-                y: 'b'.repeat(1),
-                z: 'b'.repeat(p - 2) + 'c'.repeat(p),
-                fullOriginal: 'a'.repeat(p) + 'b'.repeat(p) + 'c'.repeat(p),
-            };
-        },
-        check: (str) => {
-            const aCount = (str.match(/a/g) || []).length;
-            const bCount = (str.match(/b/g) || []).length;
-            const cCount = (str.match(/c/g) || []).length;
-            return aCount === bCount && bCount === cCount && aCount > 0;
+        genString: p => ({
+            u: 'a'.repeat(Math.max(0, p - 2)), v: 'a'.repeat(1),
+            x: 'a'.repeat(1) + 'b'.repeat(1), y: 'b'.repeat(1),
+            z: 'b'.repeat(p - 2) + 'c'.repeat(p),
+            fullOriginal: 'a'.repeat(p) + 'b'.repeat(p) + 'c'.repeat(p),
+        }),
+        check: str => {
+            const a = (str.match(/a/g)||[]).length, b = (str.match(/b/g)||[]).length, c = (str.match(/c/g)||[]).length;
+            return a === b && b === c && a > 0;
         },
     },
     ww: {
         title: 'Mirror Symmetry Breach',
         desc: 'L₂: The string w repeated exactly. Requires exact copy matching. String: ww where w ∈ {a,b}*',
         genString: p => {
-            // s = a^p b a^p b
             const half = 'a'.repeat(p) + 'b';
-            return {
-                u: 'a'.repeat(Math.max(0, p - 2)),
-                v: 'a'.repeat(1),
-                x: 'a'.repeat(1) + 'b',
-                y: 'a'.repeat(1),
-                z: 'a'.repeat(Math.max(0, p - 2)) + 'b',
-                fullOriginal: half + half,
-            };
+            return { u: 'a'.repeat(Math.max(0,p-2)), v: 'a'.repeat(1), x: 'a'.repeat(1)+'b', y: 'a'.repeat(1), z: 'a'.repeat(Math.max(0,p-2))+'b', fullOriginal: half+half };
         },
-        check: (str) => {
-            if (str.length % 2 !== 0) return false;
-            const mid = str.length / 2;
-            return str.slice(0, mid) === str.slice(mid);
-        },
+        check: str => { if (str.length % 2 !== 0) return false; const mid = str.length/2; return str.slice(0,mid) === str.slice(mid); },
     },
     anbncndn: {
         title: 'Quad Frequency Lock',
         desc: 'L₃: Four-way balance — equal counts of a, b, c, d. String: aⁿbⁿcⁿdⁿ',
-        genString: p => {
-            return {
-                u: 'a'.repeat(Math.max(0, p - 2)),
-                v: 'a'.repeat(1),
-                x: 'a'.repeat(1) + 'b'.repeat(1),
-                y: 'b'.repeat(1),
-                z: 'b'.repeat(p - 2) + 'c'.repeat(p) + 'd'.repeat(p),
-                fullOriginal: 'a'.repeat(p) + 'b'.repeat(p) + 'c'.repeat(p) + 'd'.repeat(p),
-            };
-        },
-        check: (str) => {
-            const aCount = (str.match(/a/g) || []).length;
-            const bCount = (str.match(/b/g) || []).length;
-            const cCount = (str.match(/c/g) || []).length;
-            const dCount = (str.match(/d/g) || []).length;
-            return aCount === bCount && bCount === cCount && cCount === dCount && aCount > 0;
+        genString: p => ({
+            u: 'a'.repeat(Math.max(0,p-2)), v: 'a'.repeat(1), x: 'a'.repeat(1)+'b'.repeat(1), y: 'b'.repeat(1),
+            z: 'b'.repeat(p-2)+'c'.repeat(p)+'d'.repeat(p), fullOriginal: 'a'.repeat(p)+'b'.repeat(p)+'c'.repeat(p)+'d'.repeat(p),
+        }),
+        check: str => {
+            const a=(str.match(/a/g)||[]).length, b=(str.match(/b/g)||[]).length, c=(str.match(/c/g)||[]).length, d=(str.match(/d/g)||[]).length;
+            return a===b && b===c && c===d && a>0;
         },
     },
     a2n: {
         title: 'Perfect Square Disruption',
         desc: 'L₄: String of a\'s whose length is a perfect square. String: a^(n²)',
         genString: p => {
-            const n = p;
-            const totalLen = n * n;
-            return {
-                u: 'a'.repeat(Math.max(0, Math.floor(totalLen/4))),
-                v: 'a'.repeat(1),
-                x: 'a'.repeat(Math.max(1, Math.floor(totalLen/4))),
-                y: 'a'.repeat(1),
-                z: 'a'.repeat(Math.max(0, totalLen - Math.floor(totalLen/4) - 1 - Math.floor(totalLen/4) - 1)),
-                fullOriginal: 'a'.repeat(totalLen),
-            };
+            const totalLen = p * p;
+            const q = Math.floor(totalLen/4);
+            return { u: 'a'.repeat(Math.max(0,q)), v: 'a'.repeat(1), x: 'a'.repeat(Math.max(1,q)), y: 'a'.repeat(1), z: 'a'.repeat(Math.max(0,totalLen-q-1-q-1)), fullOriginal: 'a'.repeat(totalLen) };
         },
-        check: (str) => {
-            const len = str.length;
-            if (len === 0) return false;
-            const sqrt = Math.sqrt(len);
-            return sqrt === Math.floor(sqrt);
-        },
+        check: str => { const len=str.length; if(len===0) return false; const s=Math.sqrt(len); return s===Math.floor(s); },
     },
 };
 
@@ -289,37 +197,26 @@ function render() {
     const L = LANGUAGES[state.lang];
     const parts = L.genString(state.p);
     const { u, v, x, y, z } = parts;
-
-    // Build pumped string: u + v^n + x + y^n + z
-    const pumpedV = v.repeat(state.n);
-    const pumpedY = y.repeat(state.n);
+    const pumpedV = v.repeat(state.n), pumpedY = y.repeat(state.n);
     const fullString = u + pumpedV + x + pumpedY + z;
 
-    // Update text
-    $valP.textContent = state.p;
-    $valN.textContent = state.n;
-    $nGhost.textContent = state.n;
+    $valP.textContent = state.p; $valN.textContent = state.n; $nGhost.textContent = state.n;
     $partU.textContent = u || 'ε';
     $partV.textContent = (pumpedV || 'ε') + ` (×${state.n})`;
     $partX.textContent = x || 'ε';
     $partY.textContent = (pumpedY || 'ε') + ` (×${state.n})`;
     $partZ.textContent = z || 'ε';
-    $langTitle.textContent = L.title;
-    $langDesc.textContent = L.desc;
+    $langTitle.textContent = L.title; $langDesc.textContent = L.desc;
 
-    // Build token string
     $wrap.innerHTML = '';
     const frag = document.createDocumentFragment();
-
     const addTokens = (str, pumpClass = '') => {
         for (let i = 0; i < str.length; i++) {
             const t = document.createElement('div');
             t.className = `token ${str[i]}` + (pumpClass ? ` ${pumpClass}` : '');
-            t.textContent = str[i];
-            frag.appendChild(t);
+            t.textContent = str[i]; frag.appendChild(t);
         }
     };
-
     addTokens(u);
     addTokens(pumpedV, state.n !== 1 ? 'v-pump' : '');
     addTokens(x);
@@ -327,39 +224,22 @@ function render() {
     addTokens(z);
     $wrap.appendChild(frag);
 
-    // Animate tokens in
-    gsap.fromTo('.cfl-string-wrap .token', { scale: 0, opacity: 0 }, {
-        scale: 1, opacity: 1, duration: 0.35, stagger: 0.015, ease: 'back.out(2)'
-    });
+    gsap.fromTo('.cfl-string-wrap .token', { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, stagger: 0.015, ease: 'back.out(2)' });
 
-    // Status check
     const stable = L.check(fullString);
-
     $statusTitle.className = `status-indicator ${stable ? 'stable' : 'unstable'}`;
     $statusTitle.textContent = stable ? 'PARSE TREE: STABLE' : 'PARSE TREE: COLLAPSED!';
     $statusDtl.textContent = stable
         ? `String "${fullString.length > 30 ? fullString.slice(0,30)+'…' : fullString}" satisfies the language rule. Accepted.`
         : `Pumped string (length ${fullString.length}) violates the language rule. This language is NOT context-free.`;
 
-    // Draw tree
-    const treeParts = {
-        u: u,
-        v: pumpedV,
-        x: x,
-        y: pumpedY,
-        z: z,
-    };
-    drawTree(treeParts, stable);
+    drawTree({ u, v: pumpedV, x, y: pumpedY, z }, stable);
 
-    // Stage glow on unstable
     const stage = document.querySelector('.cfl-stage');
     if (!stable) {
         gsap.fromTo(stage, { outlineColor: 'rgba(244,114,182,0)' },
-            { outlineColor: 'rgba(244,114,182,0.4)', outlineWidth: '2px', outlineStyle: 'solid',
-              duration: 0.2, yoyo: true, repeat: 3 });
-    } else {
-        stage.style.outline = 'none';
-    }
+            { outlineColor: 'rgba(244,114,182,0.4)', outlineWidth: '2px', outlineStyle: 'solid', duration: 0.2, yoyo: true, repeat: 3 });
+    } else { stage.style.outline = 'none'; }
 }
 
 $langSelect.addEventListener('change', e => { state.lang = e.target.value; state.n = 1; render(); });
