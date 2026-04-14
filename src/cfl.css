@@ -354,22 +354,56 @@
 .p-label.cfl-ly { color: var(--cfl-accent3); border-color: rgba(244,114,182,0.4); background: rgba(244,114,182,0.07); }
 .p-label.cfl-lz { color: #ff7043; border-color: rgba(255,112,67,0.4); background: rgba(255,112,67,0.07); }
 
-/* Token Colors for CFL */
-.cfl-string-wrap .token.a { background: rgba(100,181,246,0.1); border-color: rgba(100,181,246,0.4); color: #64b5f6; }
-.cfl-string-wrap .token.b { background: rgba(200,242,58,0.1); border-color: rgba(200,242,58,0.4); color: var(--accent); }
-.cfl-string-wrap .token.c { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.4); color: var(--cfl-accent); }
-.cfl-string-wrap .token.d { background: rgba(244,114,182,0.1); border-color: rgba(244,114,182,0.4); color: var(--cfl-accent3); }
-
-.cfl-string-wrap .token.v-pump {
-    box-shadow: 0 0 12px var(--cfl-glow);
-    border-color: var(--cfl-accent);
-    transform: translateY(-4px);
+/* Token Colors for CFL — enhanced to match RL visual quality */
+.cfl-string-wrap .token.a {
+    background: rgba(100,181,246,0.12);
+    border-color: rgba(100,181,246,0.5);
+    color: #64b5f6;
+    text-shadow: 0 0 8px rgba(100,181,246,0.3);
+}
+.cfl-string-wrap .token.b {
+    background: rgba(200,242,58,0.12);
+    border-color: rgba(200,242,58,0.5);
+    color: var(--accent);
+    text-shadow: 0 0 8px rgba(200,242,58,0.3);
+}
+.cfl-string-wrap .token.c {
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.5);
+    color: var(--cfl-accent);
+    text-shadow: 0 0 8px rgba(167,139,250,0.3);
+}
+.cfl-string-wrap .token.d {
+    background: rgba(244,114,182,0.12);
+    border-color: rgba(244,114,182,0.5);
+    color: var(--cfl-accent3);
+    text-shadow: 0 0 8px rgba(244,114,182,0.3);
 }
 
+/* V-PUMP tokens — elevated with violet glow pulse */
+.cfl-string-wrap .token.v-pump {
+    box-shadow: 0 0 16px rgba(167,139,250,0.6), 0 0 30px rgba(167,139,250,0.2);
+    border-color: var(--cfl-accent);
+    transform: translateY(-6px) scale(1.08);
+    animation: cfl-v-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes cfl-v-pulse {
+    0%   { box-shadow: 0 0 12px rgba(167,139,250,0.5), 0 0 24px rgba(167,139,250,0.15); transform: translateY(-6px) scale(1.08); }
+    100% { box-shadow: 0 0 22px rgba(167,139,250,0.8), 0 0 40px rgba(167,139,250,0.3);  transform: translateY(-8px) scale(1.12); }
+}
+
+/* Y-PUMP tokens — elevated with pink glow pulse */
 .cfl-string-wrap .token.y-pump {
-    box-shadow: 0 0 12px rgba(244,114,182,0.5);
+    box-shadow: 0 0 16px rgba(244,114,182,0.6), 0 0 30px rgba(244,114,182,0.2);
     border-color: var(--cfl-accent3);
-    transform: translateY(-4px);
+    transform: translateY(-6px) scale(1.08);
+    animation: cfl-y-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes cfl-y-pulse {
+    0%   { box-shadow: 0 0 12px rgba(244,114,182,0.5), 0 0 24px rgba(244,114,182,0.15); transform: translateY(-6px) scale(1.08); }
+    100% { box-shadow: 0 0 22px rgba(244,114,182,0.8), 0 0 40px rgba(244,114,182,0.3);  transform: translateY(-8px) scale(1.12); }
 }
 
 /* Parse tree visualisation */
