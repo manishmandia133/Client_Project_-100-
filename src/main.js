@@ -231,9 +231,72 @@ gsap.utils.toArray('.eg-row').forEach((el, i) => {
     });
 });
 
+// ─── CFL SECTION ANIMATIONS ────────────────────────
+
+// Set initial hidden states for CFL elements
+gsap.set('.cfl-pill-tag',      { opacity: 0, y: 20 });
+gsap.set('.cfl-display-h2',    { opacity: 0, y: 40 });
+gsap.set('.cfl-compare-card',  { opacity: 0, y: 50 });
+gsap.set('.cfl-decomp-card',   { opacity: 0, y: 50 });
+gsap.set('.cfl-condition-row', { opacity: 0, x: 40 });
+gsap.set('.cfl-step',          { opacity: 0, x: 40 });
+
+// CFL pill tags
+gsap.utils.toArray('.cfl-pill-tag').forEach(el => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 95%', once: true }
+    });
+});
+
+// CFL headings
+gsap.utils.toArray('.cfl-display-h2').forEach(el => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
+// CFL comparison cards stagger
+gsap.utils.toArray('.cfl-compare-card').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        delay: i * 0.15,
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
+// CFL decomposition cards stagger
+gsap.utils.toArray('.cfl-decomp-card').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        delay: i * 0.1,
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
+// CFL condition rows stagger
+gsap.utils.toArray('.cfl-condition-row').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, x: 0, duration: 0.8, ease: 'power3.out',
+        delay: i * 0.1,
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
+// CFL proof steps stagger
+gsap.utils.toArray('.cfl-step').forEach((el, i) => {
+    gsap.to(el, {
+        opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+        delay: i * 0.08,
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+    });
+});
+
 // Force ScrollTrigger to recalculate after fonts/images load
 // (critical for GitHub Pages where layout shifts happen after deploy)
 window.addEventListener('load', () => {
     ScrollTrigger.refresh();
 });
+
 
