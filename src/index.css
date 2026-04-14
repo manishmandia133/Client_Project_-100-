@@ -642,6 +642,13 @@ footer div {
     position: absolute; inset: 0;
     pointer-events: none; opacity: 0.25;
 }
+/* CFL stage canvas - same absolute positioning as RL */
+#cfl-bg-canvas {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; opacity: 0.3;
+    z-index: 0;
+}
 
 .sim-title-area {
     text-align: center;
